@@ -15,5 +15,5 @@ for file in *.txt
 	do mv $file ${file/txt/csv}
 done
 
-echo Listing available files…
+echo Listing available csv files…
 ls
