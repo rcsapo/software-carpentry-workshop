@@ -1,15 +1,33 @@
-%matplotlib inline
-
 import pandas as pd
 import statsmodels.api as sm
 import matplotlib.pyplot as plt
 
-data = pd.read_csv('A2_mosquito_data.csv')
-data['temperature'] = (data['temperature'] - 32) * 5 / 9.0
-regr_results = sm.OLS.from_formula('mosquitos ~ temperature + rainfall', data).fit()
-parameters = regr_results.params
-predicted = parameters[0] + parameters[1] * data['temperature'] + parameters[2] * data['rainfall']
-plt.plot(predicted, data['mosquitos'], 'ro')
-min_mosquitos, max_mosquitos = min(data['mosquitos']), max(data['mosquitos'])
-plt.plot([min_mosquitos, max_mosquitos], [min_mosquitos, max_mosquitos], 'k-')
-print parameters
+def fahr_to_celsius(tempF):
+    """Convert fahrenheit to celsius"""
+    tempC = (tempF - 32) * 5 / 9.0
+    return tempC
+
+def analyze(data,figure_filename):
+    """Perform regression analysis on mosquito data
+    
+    Takes a dataframe as input that includes columns named 'temperature',
+    'rainfall', and 'mosquitos'.
+    
+    Saves output plot under figure_filename.
+        
+    For consistency, always use temperature in Celsius.
+    
+    Performs a multiple regression to predict the number of mosquitos.
+    Creates an observed-predicted plot of the result and
+    returns the parameters of the regression.
+    
+    """
+    regr_results = sm.OLS.from_formula('mosquitos ~ temperature + rainfall', data).fit()
+    parameters = regr_results.params
+    predicted = parameters['Intercept'] + parameters['temperature'] * data['temperature'] + parameters['rainfall'] * data['rainfall']
+    plt.figure()
+    plt.plot(predicted, data['mosquitos'], 'ro')
+    min_mosquitos, max_mosquitos = min(data['mosquitos']), max(data['mosquitos'])
+    plt.plot([min_mosquitos, max_mosquitos], [min_mosquitos, max_mosquitos], 'k-')
+    plt.savefig(figure_filename)
+    return parameters
