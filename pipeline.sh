@@ -1,0 +1,19 @@
+echo Starting with a clean slate…
+rm *.csv
+
+echo Downloading data…
+curl https://github.com/zonca/swcarpentry-workshop-pandas/blob/master/rawdata/rawdata.zip?raw=true -Lo rawdata.zip
+
+echo Unpacking…
+unzip rawdata.zip
+
+echo Cleaning up…
+rm *tmp *.zip
+
+echo Changing file extension…
+for file in *.txt
+	do mv $file ${file/txt/csv}
+done
+
+echo Listing available files…
+ls
